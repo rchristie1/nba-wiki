@@ -1,0 +1,24 @@
+%header-footer-setup {
+  left: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  background-color: #000;
+  color: #fff;
+  position: fixed;
+}
+
+header {
+  @extend %header-footer-setup;
+  top: 0;
+  height: 57px;
+}
+footer {
+  @extend %header-footer-setup;
+  bottom: 0;
+  height: 57px;
+}
+
+.profile {
+  margin: 57px 0;
+}
