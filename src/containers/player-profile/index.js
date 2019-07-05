@@ -1,18 +1,10 @@
 import React, { Component } from 'react';
 import styles from './index.module.scss';
 import Loader from '../../widgets/loader';
+import {PlayerDetails} from '../../components/GetPlayerDetails';
 
 import axios from 'axios';
 import { HeadShots, playercareerstats, commonplayerinfo, API2 } from '../../config';
-
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-
 
 export default class index extends Component {
   state = {
@@ -26,50 +18,6 @@ export default class index extends Component {
     btn1Text: 'Season Stats',
     btn2Text: 'Career Totals',
   };
-
-  //#region Material UI
-  useStyles = makeStyles(theme => ({
-    root: {
-      width: '100%',
-      marginTop: theme.spacing(3),
-      overflowX: 'auto',
-    },
-    table: {
-      minWidth: 700,
-    },
-    searchIcon: {
-        width: theme.spacing(7),
-        height: '100%',
-        position: 'absolute',
-        pointerEvents: 'none',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      },
-  }));
-
-  StyledTableCell = withStyles(theme => ({
-    head: {
-      backgroundColor: theme.palette.common.black,
-      color: theme.palette.common.white,
-    },
-    body: {
-      fontSize: 14,
-    },
-    root: {
-      width: 100,
-      padding: 8,
-    },
-  }))(TableCell);
-
-  StyledTableRow = withStyles(theme => ({
-    root: {
-      '&:nth-of-type(odd)': {
-        backgroundColor: theme.palette.background.default,
-      },
-    },
-  }))(TableRow);
-  //#endregion
 
   componentDidMount() {
     //the id of the player we want to search
@@ -94,83 +42,12 @@ export default class index extends Component {
           .get(`${API2}/playercareerstats`)
           .then(resp => {
             this.setState({ careerStats: resp.data.resultSets });
-            this.getAllStats(resp.data.resultSets);
+            this.setState({totals: PlayerDetails(resp.data.resultSets)});
           })
           .catch(err => console.log(err));
       })
       .catch(err => console.log(err));
   }
-
-  getAllStats = playerStats => {
-    const classes = this.useStyles;
-    let parent = null;
-    let totals = [];
-
-    //loop only the first 4 sections inside the results set
-    for (let i = 0; i < 4; i++) {
-      let exlusions = i === 0 || i === 2 ? [0, 2, 3, 5] : [0, 1, 2];
-
-      //create the table head for teh categories
-      const tableHead = this.createStatElement(playerStats[i].headers, exlusions, 'head');
-
-      //next generate all the child elements
-      const childElements = playerStats[i].rowSet.map(data => {
-        for (let j = 0; j < data.length; j++) {
-          return this.createStatElement(data, exlusions, 'row');
-        }
-        return data;
-      });
-
-      // put together the entire table to output
-      parent = (
-        <Paper className={classes.root}>
-          <Table className={classes.table}>
-            <TableHead>{tableHead}</TableHead>
-            <TableBody>{childElements}</TableBody>
-          </Table>
-        </Paper>
-      );
-      totals = [...totals, parent];
-    }
-
-    //return the season totals for the player
-    return this.setState({ totals });
-  };
-
-  // generates the elements for the table
-  createStatElement = (data, exclusions, type) => {
-    let filterData = [];
-
-    data.map((d, i) => {
-      if (!exclusions.includes(i)) {
-        // only run if doing work for the head elements
-        if (type === 'head') {
-          if (d.includes('_PCT')) d = d.replace('_PCT', ' %');
-          if (d === 'TEAM_ABBREVIATION') d = 'TEAM';
-          if (d === 'SEASON_ID') d = 'SEASON';
-
-          return (filterData = [
-            ...filterData,
-            <this.StyledTableCell align='right' key={i}>
-              {d}
-            </this.StyledTableCell>,
-          ]);
-        }
-        filterData = [
-          ...filterData,
-          <this.StyledTableCell align='right' key={i}>
-            {d}
-          </this.StyledTableCell>,
-        ];
-      }
-      return filterData;
-    });
-    return type === 'head' ? (
-      <TableRow hover>{filterData}</TableRow>
-    ) : (
-      <this.StyledTableRow key={`${data[0]}${data[26]}`}>{filterData}</this.StyledTableRow>
-    );
-  };
 
   toggleStats = () => {
     let toggle = this.state.statToggle;
