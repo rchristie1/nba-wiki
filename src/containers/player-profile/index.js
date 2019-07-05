@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import styles from './index.module.scss';
 import Loader from '../../widgets/loader';
-import {PlayerDetails} from '../../components/GetPlayerDetails';
+import PlayerSummary from '../../components/PlayerSummary';
+import {PlayerDetails} from '../../components/PlayerDetails';
 
 import axios from 'axios';
-import { HeadShots, playercareerstats, commonplayerinfo, API2 } from '../../config';
+import { playercareerstats, commonplayerinfo, API2 } from '../../config';
 
 export default class index extends Component {
   state = {
@@ -72,52 +72,26 @@ export default class index extends Component {
   render() {
     //if loaded then log the player data
     let loaded = this.state.careerStats && this.state.totals.length > 0 ? true : false;
-    const avg = this.state.playerAverages;
-    const pd = this.state.playerData;
     let DOB = '';
     let showSeasonStats = '';
     let showCareerStats = '';
-    let showSeason = this.state.showSeason;
 
     if (loaded) {
-      DOB = new Date(pd[6]);
+      DOB = new Date(this.state.playerData[6]);
       DOB.toLocaleDateString();
       showSeasonStats = this.state.statToggle ? this.state.totals[0] : this.state.totals[2];
       showCareerStats = this.state.statToggle ? this.state.totals[1] : this.state.totals[3];
     }
 
     return loaded ? (
-      <div className={styles.container}>
-        <div className={styles.profile}>
-          <div className={styles.profileDetails}>
-            <img src={`${HeadShots}/${pd[2]}/${pd[1]}`} alt='player' />
-          </div>
-          <div>
-            <h1>{pd[3]}</h1>
-            <h3>
-              Number: {pd[13]} | Position: {pd[14]} | {`${pd[20]} - ${pd[17]}`}{' '}
-            </h3>
 
-            <div>Height: {pd[10]}</div>
-            <div>Weight: {pd[11]}</div>
-            <div>DOB: {DOB.toLocaleDateString()}</div>
-            <div>Drafted: {pd[22]}</div>
-            <div>Experience: {pd[12]}</div>
-            <div>School: {pd[9]}</div>
-            <div>Born: {pd[7]}</div>
-          </div>
-        </div>
-
-        <div className={styles.averages}>
-          <div>PPG: {avg[3]}</div>
-          <div>APG: {avg[4]}</div>
-          <div>RPG: {avg[5]}</div>
-          <button onClick={() => this.toggleStats()}>{this.state.btn1Text}</button>
-          <button onClick={() => this.toggleStatType()}>{this.state.btn2Text}</button>
-        </div>
-
-        <div className={styles.content}>{showSeason ? showSeasonStats : showCareerStats}</div>
-      </div>
+      <PlayerSummary 
+        data={this.state}
+        DOB={DOB}
+        stats={[showSeasonStats, showCareerStats]}
+        clickToggle1={() => this.toggleStats()}
+        clickToggle2={() => this.toggleStatType()}
+      />
     ) : (
       <Loader />
     );
