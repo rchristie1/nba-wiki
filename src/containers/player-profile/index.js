@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import Loader from '../../widgets/loader';
 import PlayerSummary from '../../components/PlayerSummary';
-import {PlayerDetails} from '../../components/PlayerDetails';
+import { PlayerDetails } from '../../components/PlayerDetails';
 
 import axios from 'axios';
+import { connect } from 'react-redux';
+import * as actions from '../../store/actions';
+
 import { playercareerstats, commonplayerinfo, API2 } from '../../config';
 
-export default class index extends Component {
+class PlayerProfile extends Component {
   state = {
     playerData: null,
     playerAverages: null,
@@ -20,8 +23,11 @@ export default class index extends Component {
   };
 
   componentDidMount() {
-    //the id of the player we want to search
-    const PID = 201566;
+    this.props.getPlayerID();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const PID = nextProps.PID;
 
     //Apply the current PlayerID to the config options
     commonplayerinfo.PlayerID = PID;
@@ -29,7 +35,7 @@ export default class index extends Component {
 
     // post to the url with the Query params
     axios
-      //   .post('/commonplayerinfo', commonplayerinfo)
+      // .post('/commonplayerinfo', commonplayerinfo)
       .get(`${API2}/commonplayerinfo`)
       .then(res => {
         this.setState({
@@ -38,11 +44,11 @@ export default class index extends Component {
         });
 
         axios
-          //   .post('/playercareerstats', playercareerstats)
+          // .post('/playercareerstats', playercareerstats)
           .get(`${API2}/playercareerstats`)
           .then(resp => {
             this.setState({ careerStats: resp.data.resultSets });
-            this.setState({totals: PlayerDetails(resp.data.resultSets)});
+            this.setState({ totals: PlayerDetails(resp.data.resultSets) });
           })
           .catch(err => console.log(err));
       })
@@ -56,18 +62,18 @@ export default class index extends Component {
 
     const btn1Text = toggle ? 'Season Stats' : 'Career Stats';
 
-    this.setState({ statToggle: toggle, btn1Text});
+    this.setState({ statToggle: toggle, btn1Text });
   };
 
   toggleStatType = () => {
-      let showSeason = this.state.showSeason;
+    let showSeason = this.state.showSeason;
 
-      showSeason = !showSeason;
+    showSeason = !showSeason;
 
-      const btn2Text = showSeason ? 'Career Totals' : 'Season Totals';
+    const btn2Text = showSeason ? 'Career Totals' : 'Season Totals';
 
-      this.setState({ showSeason, btn2Text })
-  }
+    this.setState({ showSeason, btn2Text });
+  };
 
   render() {
     //if loaded then log the player data
@@ -81,11 +87,18 @@ export default class index extends Component {
       DOB.toLocaleDateString();
       showSeasonStats = this.state.statToggle ? this.state.totals[0] : this.state.totals[2];
       showCareerStats = this.state.statToggle ? this.state.totals[1] : this.state.totals[3];
+
+      // axios.get(`${HeadShots}/${pd[2]}/${pd[1]}`).then(res => {
+      //   if (res.headers['content-type'] === 'image/png') {
+      //     showDefaultImage = false;
+      //   } else {
+      //     showDefaultImage = true;
+      //   }
+      // });
     }
 
     return loaded ? (
-
-      <PlayerSummary 
+      <PlayerSummary
         data={this.state}
         DOB={DOB}
         stats={[showSeasonStats, showCareerStats]}
@@ -97,3 +110,21 @@ export default class index extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    PID: state.players.playerID,
+    // TID: state.team.playerList,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    getPlayerID: () => dispatch(actions.getPlayerID()),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PlayerProfile);

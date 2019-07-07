@@ -11,25 +11,10 @@ import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 
 //#region Material UI
-const useStyles = makeStyles(theme => ({
-  root: {
-    width: '100%',
-    marginTop: theme.spacing(3),
-    overflowX: 'auto',
-  },
-  table: {
-    minWidth: 700,
-  },
-  searchIcon: {
-    width: theme.spacing(7),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-}));
+const st = {
+  overflowX: 'scroll',
+  borderRadius: 0,
+}
 
 const StyledTableCell = withStyles(theme => ({
   head: {
@@ -55,7 +40,6 @@ const StyledTableRow = withStyles(theme => ({
 //#endregion
 
 export const PlayerDetails = props => {
-  const classes = useStyles;
   let parent = null;
   let totals = [];
 
@@ -76,8 +60,8 @@ export const PlayerDetails = props => {
 
     // construct the table to
     parent = (
-      <Paper className={classes.root}>
-        <Table className={classes.table}>
+      <Paper style={st}>
+        <Table>
           <TableHead>{tableHead}</TableHead>
           <TableBody>{childElements}</TableBody>
         </Table>
@@ -104,7 +88,7 @@ const GenerateStatTable = (data, exclusions, type) => {
             ...filterData,
             <StyledTableCell align='right' key={i}>
               {d}
-            </StyledTableCell>,
+            </StyledTableCell>
           ]);
         }
         filterData = [

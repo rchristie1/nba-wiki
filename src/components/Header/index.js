@@ -78,10 +78,10 @@ class Header extends Component {
 
   //TODO: send the id to the player or team profile to update the results
   openPlayerTeamProfile = UID => {
-    console.log('====================================');
-    console.log(UID);
-    console.log('====================================');
+    this.props.updatePlayerID(UID);
   };
+
+  componentWillReceiveProps(nextProps) {}
 
   focusLost = () => {
     // this.setState({searchResults: []})
@@ -92,16 +92,16 @@ class Header extends Component {
     return (
       <div className={styles.container}>
         <div className={styles.logo}>
-          <img src={logo} alt='nba official logo' />
+          <img src={logo} alt='nba official logo' /> &nbsp; Wiki
         </div>
         <div className={styles.seachSection}>
-          <select onChange={event => this.searchOptionChanged(event)}>
-            <option id='1'>Player</option>
-            <option id='2'>Team</option>
-          </select>
-
           <span>
             <SearchIcon />
+            <select onChange={event => this.searchOptionChanged(event)}>
+              <option id='1'>Player</option>
+              <option id='2'>Team</option>
+            </select>
+
             <input
               type='text'
               placeholder={`${category === 'team' ? 'Raptors' : 'Lebron James'}...`}
@@ -121,7 +121,7 @@ class Header extends Component {
 const mapStateToProps = state => {
   return {
     playerData: state.players.playerList,
-    teamData: state.players.teamList,
+    teamData: state.teams.teamList,
   };
 };
 
@@ -129,6 +129,7 @@ const mapDispatchToProps = dispatch => {
   return {
     getAllPlayers: () => dispatch(actions.getAllPlayers()),
     getAllTeams: () => dispatch(actions.getAllTeams()),
+    updatePlayerID: UID => dispatch(actions.updatePlayerID(UID)),
   };
 };
 

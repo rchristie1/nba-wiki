@@ -3,7 +3,7 @@ export default (state = {}, action) => {
       case 'GET_ALL_TEAMS':
         return { ...state, teamList: action.payload };
       case 'GET_TEAM_ID':
-        return { ...state, playerID: action.payload };
+        return { ...state, teamID: action.payload };
       default:
         return state;
     }
