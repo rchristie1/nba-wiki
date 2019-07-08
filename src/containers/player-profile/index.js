@@ -76,6 +76,8 @@ class PlayerProfile extends Component {
   };
 
   render() {
+    console.log(this.props);
+    
     //if loaded then log the player data
     let loaded = this.state.careerStats && this.state.totals.length > 0 ? true : false;
     let DOB = '';
@@ -87,14 +89,6 @@ class PlayerProfile extends Component {
       DOB.toLocaleDateString();
       showSeasonStats = this.state.statToggle ? this.state.totals[0] : this.state.totals[2];
       showCareerStats = this.state.statToggle ? this.state.totals[1] : this.state.totals[3];
-
-      // axios.get(`${HeadShots}/${pd[2]}/${pd[1]}`).then(res => {
-      //   if (res.headers['content-type'] === 'image/png') {
-      //     showDefaultImage = false;
-      //   } else {
-      //     showDefaultImage = true;
-      //   }
-      // });
     }
 
     return loaded ? (
@@ -114,7 +108,6 @@ class PlayerProfile extends Component {
 const mapStateToProps = state => {
   return {
     PID: state.players.playerID,
-    // TID: state.team.playerList,
   };
 };
 

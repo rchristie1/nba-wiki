@@ -6,12 +6,13 @@
   background-color: #000;
   color: #fff;
   position: fixed;
+  z-index: 500;
 }
 
 header {
   @extend %header-footer-setup;
   top: 0;
-  height: 57px;
+  height: 75px;
 }
 footer {
   @extend %header-footer-setup;

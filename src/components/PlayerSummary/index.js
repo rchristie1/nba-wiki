@@ -11,12 +11,7 @@ const PlayerSummary = props => {
     <div className={styles.container}>
       <div className={styles.profile}>
         <div>
-          {/* {showDefaultImage ? (
-            <img src={noImage} alt={`${pd[1]} ${pd[2]}`} />
-          ) : ( */}
-            {/* <img src={`${HeadShots}/${pd[2]}/${pd[1]}`} alt={`${pd[1]} ${pd[2]}`} /> */}
             <img src={`${HeadShotsNBA}/${pd[0]}.png`} alt={`${pd[1]} ${pd[2]}`}/>
-          {/* )} */}
         </div>
         <div className={styles.quickSummary}>
           <h1>{pd[3]}</h1>

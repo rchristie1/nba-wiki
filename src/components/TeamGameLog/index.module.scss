@@ -1,0 +1,43 @@
+%sharedResults {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+
+  div {
+    width: 80px !important;
+    display: flex;
+    align-items: center;
+    &:not(:first-child()) {
+      justify-content: center;
+    }
+    padding-left: 8px;
+  }
+}
+
+.teamGamelog {
+  height: 600px;
+  margin-bottom: 160px;
+  position: relative;
+}
+
+.results {
+  @extend %sharedResults;
+  height: 70px;
+  &:nth-child(even) {
+    background-color: #f8f7f7;
+  }
+}
+
+.resultContainer {
+  height: 520px;
+  overflow-y: scroll;
+}
+
+.resultsHead {
+  @extend %sharedResults;
+  height: 80px;
+  background-color: #333333;
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+}

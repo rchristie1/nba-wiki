@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import styles from './index.module.scss';
+import { Link } from 'react-router-dom';
+
 import logo from '../../assets/images/nba_logo.png';
+
 import debounce from 'lodash.debounce';
+
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
 
@@ -81,7 +85,12 @@ class Header extends Component {
     this.props.updatePlayerID(UID);
   };
 
-  componentWillReceiveProps(nextProps) {}
+  componentWillReceiveProps(nextProps) {
+    const params = new URLSearchParams(this.props.location);
+    console.log('====================================');
+    console.log(params, nextProps);
+    console.log('====================================');
+  }
 
   focusLost = () => {
     // this.setState({searchResults: []})
@@ -92,9 +101,16 @@ class Header extends Component {
     return (
       <div className={styles.container}>
         <div className={styles.logo}>
-          <img src={logo} alt='nba official logo' /> &nbsp; Wiki
+          <Link to='/'>
+            <img src={logo} alt='nba official logo' /> &nbsp; Wiki
+          </Link>
         </div>
+
         <div className={styles.seachSection}>
+          <div className={styles.links}>
+            <Link to='/'>Players</Link>
+            <Link to='/teams'>Teams</Link>
+          </div>
           <span>
             <SearchIcon />
             <select onChange={event => this.searchOptionChanged(event)}>

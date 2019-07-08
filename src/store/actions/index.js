@@ -2,6 +2,41 @@ import axios from 'axios';
 import { API2 } from '../../config';
 
 
+//#region Players
+export const getAllPlayers = () => {
+  const request = axios
+    .get(`${API2}/commonallplayers`)
+    .then(res => res.data.resultSets[0])
+    .catch(err => console.log(err));
+
+  return {
+    type: 'GET_ALL_PLAYERS',
+    payload: request,
+  };
+};
+
+export const getPlayerID = () => {
+
+  //const PUID = 201566; //russ
+  const PUID = 2544; //lbj
+
+  return {
+    type: 'GET_PLAYER_ID',
+    payload: PUID,
+  };
+};
+
+export const updatePlayerID = (ID) => {
+  const PUID = ID; 
+
+  return {
+    type: 'GET_PLAYER_ID',
+    payload: PUID,
+  };
+};
+//#endregion
+
+//#region Teams
 export const getAllTeams = () => {
   const teams = [
     { teamName: 'Atlanta Hawks', teamID: 1610612737 },
@@ -42,43 +77,13 @@ export const getAllTeams = () => {
   };
 };
 
-export const getAllPlayers = () => {
-  const request = axios
-    .get(`${API2}/commonallplayers`)
-    .then(res => res.data.resultSets[0])
-    .catch(err => console.log(err));
-
-  return {
-    type: 'GET_ALL_PLAYERS',
-    payload: request,
-  };
-};
-
-export const getPlayerID = () => {
-
-  //const PUID = 201566; //russ
-  const PUID = 2544; //lbj
-
-  return {
-    type: 'GET_PLAYER_ID',
-    payload: PUID,
-  };
-} 
-export const updatePlayerID = (ID) => {
-  const PUID = ID; 
-
-  return {
-    type: 'GET_PLAYER_ID',
-    payload: PUID,
-  };
-} 
-
 export const getTeamID = () => {
 
-  const TUID = 0;
+  const TUID = 1610612761;
   
   return {
     type: 'GET_TEAM_ID',
     payload: TUID,
   };
-} 
+};
+//#endregion
