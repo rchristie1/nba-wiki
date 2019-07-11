@@ -45,3 +45,13 @@ h2 {
   width: 20%;
   border: none;
 }
+
+.name {
+  a {
+    color: blue;
+    cursor: pointer;
+    &:active {
+      color: lightblue;
+    }
+  }
+}

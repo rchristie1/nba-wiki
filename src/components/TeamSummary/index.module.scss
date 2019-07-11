@@ -48,7 +48,7 @@
     cursor: pointer;
     border-top-left-radius: 25px;
     border-top-right-radius: 25px;
-    transition: all 150ms ease-in;
+    transition: all 100ms ease-in;
     &:first-child {
       margin-left: 0.2%;
     }
@@ -61,5 +61,4 @@
 .active {
   font-weight: bold;
   text-decoration: underline;
-  font-size: 32px !important;
 }

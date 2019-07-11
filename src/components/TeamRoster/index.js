@@ -1,11 +1,15 @@
 import React from 'react';
 import styles from './index.module.scss';
+import { Link } from 'react-router-dom';
 
-const showPlayers = players => {
+const showPlayers = (players, update) => {
   const allPlayers = players.map((d, i) => (
     <div key={i} className={styles.playerList}>
       <div>
-        <span className={styles.number}>{d[4]}</span> <a href={`${d[12]}`}>{d[3]}</a>
+        <span className={styles.number}>{d[4]}</span>{' '}
+        <span className={styles.name} onClick={() => {update(d[12])}}>
+          <Link to="/">{d[3]}</Link>
+        </span>
       </div>
       <div>{d[5]}</div>
       <div>{d[6]}</div>
@@ -24,17 +28,19 @@ const showCoaches = players => {
   return allCoaches;
 };
 
-const TeamRoster = props => {    
+const TeamRoster = props => {
   return (
     <div className={styles.teamRoster}>
       <div>
         <div className={styles.headers}>
-          <div><span className={styles.number}>#</span>Player</div>
+          <div>
+            <span className={styles.number}>#</span>Player
+          </div>
           <div>Position</div>
           <div>Height</div>
           <div>School</div>
         </div>
-        <div>{showPlayers(props.data[0])}</div>
+        <div>{showPlayers(props.data[0], props.updatePlayer)}</div>
       </div>
       <div>
         <h2>Coaching Staff</h2>

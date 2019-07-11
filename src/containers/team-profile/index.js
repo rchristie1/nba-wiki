@@ -19,18 +19,20 @@ class TeamProfile extends Component {
 
   componentDidMount() {
     this.props.getTeamID();
+    this.props.updatePlayerID();
   }
 
-  componentWillReceiveProps(nextProps) {
-    const TID = nextProps.TID;
+  componentDidUpdate(prevProps) {
+    if (prevProps !== this.props) { 
+    const TID = !prevProps.TID ? this.props.TID : prevProps.TID;
 
     teaminfocommon.TeamID = TID;
     commonteamroster.TeamID = TID;
     teamgamelog.TeamID = TID;
 
-    axios
-      // .post('/teaminfocommon', commonplayerinfo)
-      .get(`${API2}/teaminfocommon`)
+      axios
+      .post('/teaminfocommon', teaminfocommon)
+      // .get(`${API2}/teaminfocommon`)
       .then(res => {
         this.setState({
           teamDetails: res.data.resultSets[0].rowSet[0],
@@ -40,8 +42,8 @@ class TeamProfile extends Component {
       .catch(err => console.log(err));
 
     axios
-      // .post('/commonteamroster', commonteamroster)
-      .get(`${API2}/commonteamroster`)
+      .post('/commonteamroster', commonteamroster)
+      // .get(`${API2}/commonteamroster`)
       .then(res => {
         this.setState({
           teamRoster: [res.data.resultSets[0].rowSet, res.data.resultSets[1].rowSet],
@@ -50,34 +52,46 @@ class TeamProfile extends Component {
       .catch(err => console.log(err));
 
     axios
-      // .post('/teamgamelog', teamgamelog)
-      .get(`${API2}/teamgamelog`)
+      .post('/teamgamelog', teamgamelog)
+      // .get(`${API2}/teamgamelog`)
       .then(res => {
-        this.setState({ teamGameLog: res.data });
+        // this.setState({ teamGameLog: res.data });
+        this.setState({ teamGameLog: res.data.resultSets[0] });
       })
-      .catch(err => console.log(err));
+      .catch(err => console.log(err))
+    }
   }
 
-  showGamelog = (value) => {
-    this.setState({showGamelog: value});
-  }
+  showGamelog = value => {
+    this.setState({ showGamelog: value });
+  };
 
   render() {
     let loaded = this.state.seasonRankings && this.state.teamGameLog ? true : false;
 
-    return loaded > 0 ? <TeamSummary data={this.state} showComponent={(value) => this.showGamelog(value)}/> : <Loader />;
+    return loaded > 0 ? (
+      <TeamSummary
+        data={this.state}
+        updatePlayer={this.props.updatePlayerID}
+        showComponent={value => this.showGamelog(value)}
+      />
+    ) : (
+      <Loader />
+    );
   }
 }
 
 const mapStateToProps = state => {
   return {
     TID: state.teams.teamID,
+    PID: state.players.playerID,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     getTeamID: () => dispatch(actions.getTeamID()),
+    updatePlayerID: (id) => dispatch(actions.updatePlayerID(id)),
   };
 };
 

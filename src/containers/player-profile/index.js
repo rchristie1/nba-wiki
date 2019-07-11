@@ -26,33 +26,35 @@ class PlayerProfile extends Component {
     this.props.getPlayerID();
   }
 
-  componentWillReceiveProps(nextProps) {
-    const PID = nextProps.PID;
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevProps !== this.props) {
+      const PID = !prevProps.PID ? this.props.PID : prevProps.PID;
 
-    //Apply the current PlayerID to the config options
-    commonplayerinfo.PlayerID = PID;
-    playercareerstats.PlayerID = PID;
+      //Apply the current PlayerID to the config options
+      commonplayerinfo.PlayerID = PID;
+      playercareerstats.PlayerID = PID;
 
-    // post to the url with the Query params
-    axios
-      // .post('/commonplayerinfo', commonplayerinfo)
-      .get(`${API2}/commonplayerinfo`)
-      .then(res => {
-        this.setState({
-          playerData: res.data.resultSets[0].rowSet[0],
-          playerAverages: res.data.resultSets[1].rowSet[0],
-        });
+      // post to the url with the Query params
+      axios
+        .post('/commonplayerinfo', commonplayerinfo)
+        // .get(`${API2}/commonplayerinfo`)
+        .then(res => {
+          this.setState({
+            playerData: res.data.resultSets[0].rowSet[0],
+            playerAverages: res.data.resultSets[1].rowSet[0],
+          });
 
-        axios
-          // .post('/playercareerstats', playercareerstats)
-          .get(`${API2}/playercareerstats`)
-          .then(resp => {
-            this.setState({ careerStats: resp.data.resultSets });
-            this.setState({ totals: PlayerDetails(resp.data.resultSets) });
-          })
-          .catch(err => console.log(err));
-      })
-      .catch(err => console.log(err));
+          axios
+            .post('/playercareerstats', playercareerstats)
+            // .get(`${API2}/playercareerstats`)
+            .then(resp => {
+              this.setState({ careerStats: resp.data.resultSets });
+              this.setState({ totals: PlayerDetails(resp.data.resultSets) });
+            })
+            .catch(err => console.log(err));
+        })
+        .catch(err => console.log(err));
+    }
   }
 
   toggleStats = () => {
@@ -76,8 +78,6 @@ class PlayerProfile extends Component {
   };
 
   render() {
-    console.log(this.props);
-    
     //if loaded then log the player data
     let loaded = this.state.careerStats && this.state.totals.length > 0 ? true : false;
     let DOB = '';

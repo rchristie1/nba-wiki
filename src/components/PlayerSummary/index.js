@@ -25,7 +25,6 @@ const PlayerSummary = props => {
           <div>Drafted: {pd[22]}</div>
           <div>Experience: {pd[12]}</div>
           <div>School: {pd[9]}</div>
-          {/* <div>Born: {pd[7]}</div> */}
         </div>
 
         <div className={styles.teamLogo}>

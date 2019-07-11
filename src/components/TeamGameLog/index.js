@@ -32,7 +32,7 @@ const showGameLog = data => {
   return gameLog;
 };
 
-const TeamGameLog = props => {
+const TeamGameLog = props => {  
   return (
     <div className={styles.teamGamelog}>
       <div className={styles.resultsHead}>
@@ -57,7 +57,8 @@ const TeamGameLog = props => {
         <div>PTS:</div>
       </div>
       <div className={styles.resultContainer}>
-      {showGameLog(props.data.resultSets[0].rowSet)}
+      {/* {showGameLog(props.data.resultSets[0].rowSet)} */}
+      {showGameLog(props.data.rowSet)}
       </div>
     </div>
   );

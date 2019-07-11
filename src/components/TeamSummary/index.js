@@ -11,13 +11,6 @@ const TeamSummary = props => {
   const sr = props.data.seasonRankings;
   const displayTab = props.data.showGamelog;
 
-  const tabActive = {
-    fontWeight: 'bold',
-    textDecoration: 'underline',
-    marginLeft: '0.2%',
-    transform: 'scale(1.2)',
-  };
-
   return (
     <div className={styles.teamContainer}>
       <div className={styles.teamSummary}>
@@ -62,10 +55,18 @@ const TeamSummary = props => {
 
       <div>
         <div className={styles.tabs}>
-          <div className={!displayTab ? styles.active : undefined} onClick={() => props.showComponent(false)}>Roster/Coaching Staff</div>
-          <div className={displayTab ? styles.active : undefined} onClick={() => props.showComponent(true)}>Game Log</div>
+          <div className={!displayTab ? styles.active : undefined} onClick={() => props.showComponent(false)}>
+            Roster/Coaching Staff
+          </div>
+          <div className={displayTab ? styles.active : undefined} onClick={() => props.showComponent(true)}>
+            Game Log
+          </div>
         </div>
-        {displayTab ? <TeamGameLog data={props.data.teamGameLog} /> : <TeamRoster data={props.data.teamRoster} />}
+        {displayTab ? (
+          <TeamGameLog data={props.data.teamGameLog} />
+        ) : (
+          <TeamRoster updatePlayer={props.updatePlayer} data={props.data.teamRoster} />
+        )}
       </div>
     </div>
   );
