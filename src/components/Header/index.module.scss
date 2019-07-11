@@ -10,6 +10,11 @@
 .logo {
   display: flex;
   align-items: center;
+  a {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+  }
 }
 
 span {
@@ -86,4 +91,13 @@ select {
       color: #1f6bb6;
     }
   }
+}
+
+.headTitle {
+  color: #fff;
+  border-bottom: none;
+}
+
+.active {
+  text-decoration: underline !important;
 }

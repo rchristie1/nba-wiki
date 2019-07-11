@@ -85,31 +85,26 @@ class Header extends Component {
     this.props.updatePlayerID(UID);
   };
 
-  componentWillReceiveProps(nextProps) {
-    const params = new URLSearchParams(this.props.location);
-    console.log('====================================');
-    console.log(params, nextProps);
-    console.log('====================================');
-  }
-
   focusLost = () => {
     // this.setState({searchResults: []})
   };
 
   render() {
     const category = this.state.searchType;
+    const routeActive = this.props.match.url === '/';    
+
     return (
       <div className={styles.container}>
         <div className={styles.logo}>
           <Link to='/'>
-            <img src={logo} alt='nba official logo' /> &nbsp; Wiki
+            <img src={logo} alt='nba official logo' /> &nbsp; <span className={styles.headTitle}>Wiki</span>
           </Link>
         </div>
 
         <div className={styles.seachSection}>
           <div className={styles.links}>
-            <Link to='/'>Players</Link>
-            <Link to='/teams'>Teams</Link>
+            <Link className={routeActive ? styles.active : null} to='/'>Players</Link>
+            <Link className={!routeActive ? styles.active : null} to='/teams'>Teams</Link>
           </div>
           <span>
             <SearchIcon />
