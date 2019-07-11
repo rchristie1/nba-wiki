@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { API2 } from '../../config';
 
-
 //#region Players
 export const getAllPlayers = () => {
   const request = axios
@@ -17,9 +16,7 @@ export const getAllPlayers = () => {
 
 export const getPlayerID = () => {
 
-  //const PUID = 201566; //russ
-  const PUID = 2544; //lbj
-
+  const PUID = 2544; //lbj default
   return {
     type: 'GET_PLAYER_ID',
     payload: PUID,
@@ -27,8 +24,7 @@ export const getPlayerID = () => {
 };
 
 export const updatePlayerID = (ID) => {
-  const PUID = ID; 
-
+  const PUID = ID;
   return {
     type: 'GET_PLAYER_ID',
     payload: PUID,
