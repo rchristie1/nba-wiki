@@ -1,14 +1,20 @@
 import React from 'react';
 import styles from './index.module.scss';
+import Loader from '../../../widgets/loader';
 import { Link } from 'react-router-dom';
 
-const showPlayers = (players, update) => {
+const showPlayers = (players, updatePlayer) => {
   const allPlayers = players.map((d, i) => (
     <div key={i} className={styles.playerList}>
       <div>
         <span className={styles.number}>{d[4]}</span>{' '}
-        <span className={styles.name} onClick={() => {update(d[12])}}>
-          <Link to="/">{d[3]}</Link>
+        <span
+          className={styles.name}
+          onClick={() => {
+            updatePlayer(d[12]);
+          }}
+        >
+          <Link to='/'>{d[3]}</Link>
         </span>
       </div>
       <div>{d[5]}</div>
@@ -22,14 +28,21 @@ const showCoaches = players => {
   const allCoaches = players.map((d, i) => (
     <div key={i} className={styles.playerList}>
       <div>{d[5]}</div>
-      <div>{d[8]}</div>
+      <div className={styles.coachType}>{d[8]}</div>
     </div>
   ));
   return allCoaches;
 };
 
 const TeamRoster = props => {
-  return (
+  let loaded;
+  try {
+    loaded = props.data[1] ? true : false;
+  } catch (err) {
+    loaded = false;
+  }
+
+  return loaded ? (
     <div className={styles.teamRoster}>
       <div>
         <div className={styles.headers}>
@@ -47,6 +60,8 @@ const TeamRoster = props => {
         <div>{showCoaches(props.data[1])}</div>
       </div>
     </div>
+  ) : (
+    <Loader />
   );
 };
 

@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+import './index.module.scss';
 
 import { withStyles } from '@material-ui/core/styles';
-
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableHead from '@material-ui/core/TableHead';
@@ -39,9 +40,10 @@ const StyledTableRow = withStyles(theme => ({
 }))(TableRow);
 //#endregion
 
-export const PlayerDetails = props => {
+export const PlayerDetails = (props, openTeamInfo) => {
   let parent = null;
   let totals = [];
+  
 
   //loop only the first 4 sections inside the results set
   for (let i = 0; i < 4; i++) {
@@ -53,7 +55,7 @@ export const PlayerDetails = props => {
     //next generate all the child elements
     const childElements = props[i].rowSet.map(data => {
       for (let j = 0; j < data.length; j++) {
-        return GenerateStatTable(data, exlusions, 'row');
+        return GenerateStatTable(data, exlusions, 'row', openTeamInfo);
       }
       return data;
     });
@@ -72,7 +74,7 @@ export const PlayerDetails = props => {
   return totals;
 };
 
-const GenerateStatTable = (data, exclusions, type) => {
+const GenerateStatTable = (data, exclusions, type, click) => {
   let filterData = [];
 
   if (data) {
@@ -91,9 +93,12 @@ const GenerateStatTable = (data, exclusions, type) => {
             </StyledTableCell>
           ]);
         }
+        // create a link to the teams
+        if (i === 4 && data[4] !== 'TOT' && isNaN(data[4])) d = <Link to={'/teams'}>{d}</Link>;
         filterData = [
           ...filterData,
-          <StyledTableCell align='right' key={i}>
+          //send the team id to the store when the team is selected
+          <StyledTableCell onClick={i === 4 ? () => click(data[3]): null} align='right' key={i}>
             {d}
           </StyledTableCell>,
         ];

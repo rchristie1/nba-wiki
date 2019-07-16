@@ -35,8 +35,8 @@ class Header extends Component {
     },
   }));
 
-  /* Add debounce so it doesnt perform the update continuosuly
-   because this is a synthetic event the text must be passed in 
+  /* Add debounce so it doesnt perform the update on every key stroke.
+   This is a synthetic event the text must be passed in 
    directly or it will produce an error */
   handleChange = debounce(text => {
     // create a condition that handles the type of search selected
@@ -73,25 +73,33 @@ class Header extends Component {
     return searchResults.map(
       (d, i) =>
         i < 6 && (
-          <div onClick={() => this.openPlayerTeamProfile(st === 'team' ? d.teamID : d[0])} key={i}>
+          <div onClick={() => this.searchItemSelected(st, d.teamID, d[0])} key={i}>
             {st === 'team' ? d.teamName : d[2]}
           </div>
         )
     );
   };
-
-  //TODO: send the id to the player or team profile to update the results
+  
   openPlayerTeamProfile = UID => {
-    this.props.updatePlayerID(UID);
+    //update the team or player based on the type of search 
+    this.state.searchType === 'player' ? this.props.updatePlayerID(UID) : this.props.updateTeamID(UID);
   };
 
-  focusLost = () => {
-    // this.setState({searchResults: []})
-  };
+  // hides the result list when a plater is selected
+  searchItemSelected = (searchType, TID, PID) => {
+    this.setState({searchResults: []});
+
+    this.openPlayerTeamProfile(searchType === 'team' ? TID : PID);
+  }
+
+  // repopulates the results when selected input selected
+  updateResults = val => {
+    this.handleChange(val);
+  }
 
   render() {
     const category = this.state.searchType;
-    const routeActive = this.props.match.url === '/';    
+    const routeActive = this.props.match.url === '/';
 
     return (
       <div className={styles.container}>
@@ -103,8 +111,12 @@ class Header extends Component {
 
         <div className={styles.seachSection}>
           <div className={styles.links}>
-            <Link className={routeActive ? styles.active : null} to='/'>Players</Link>
-            <Link className={!routeActive ? styles.active : null} to='/teams'>Teams</Link>
+            <Link className={routeActive ? styles.active : null} to='/'>
+              Players
+            </Link>
+            <Link className={!routeActive ? styles.active : null} to='/teams'>
+              Teams
+            </Link>
           </div>
           <span>
             <SearchIcon />
@@ -117,7 +129,7 @@ class Header extends Component {
               type='text'
               placeholder={`${category === 'team' ? 'Raptors' : 'Lebron James'}...`}
               onChange={e => this.handleChange(e.target.value)}
-              onBlur={() => this.focusLost()}
+              onFocus={e => this.updateResults(e.target.value)}
             />
           </span>
           <div className={styles.searchResults}>
@@ -141,6 +153,7 @@ const mapDispatchToProps = dispatch => {
     getAllPlayers: () => dispatch(actions.getAllPlayers()),
     getAllTeams: () => dispatch(actions.getAllTeams()),
     updatePlayerID: UID => dispatch(actions.updatePlayerID(UID)),
+    updateTeamID: UID => dispatch(actions.updateTeamID(UID)),
   };
 };
 

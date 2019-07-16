@@ -1,0 +1,11 @@
+a {
+  text-decoration: none;
+  color: blue;
+  transition: all 200ms ease-in-out;
+  &:hover {
+    color: lightblue;
+  }
+  &:active {
+    color: lightblue;
+  }
+}

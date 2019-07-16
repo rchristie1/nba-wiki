@@ -18,19 +18,28 @@ class TeamProfile extends Component {
   };
 
   componentDidMount() {
-    this.props.getTeamID();
-    this.props.updatePlayerID();
+    if (!this.props.TID) {
+      this.props.updateTeamID(1610612761);
+      this.getTeam(1610612761);
+    } else {
+      this.getTeam(this.props.TID);
+    }
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps !== this.props) { 
-    const TID = !prevProps.TID ? this.props.TID : prevProps.TID;
+    if (prevProps !== this.props) {
+      this.getTeam(this.props.TID);
+    }
+  }
+
+  getTeam = id => {
+    const TID = id;
 
     teaminfocommon.TeamID = TID;
     commonteamroster.TeamID = TID;
     teamgamelog.TeamID = TID;
 
-      axios
+    axios
       .post('/teaminfocommon', teaminfocommon)
       // .get(`${API2}/teaminfocommon`)
       .then(res => {
@@ -58,9 +67,8 @@ class TeamProfile extends Component {
         // this.setState({ teamGameLog: res.data });
         this.setState({ teamGameLog: res.data.resultSets[0] });
       })
-      .catch(err => console.log(err))
-    }
-  }
+      .catch(err => console.log(err));
+  };
 
   showGamelog = value => {
     this.setState({ showGamelog: value });
@@ -90,8 +98,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    getTeamID: () => dispatch(actions.getTeamID()),
-    updatePlayerID: (id) => dispatch(actions.updatePlayerID(id)),
+    updateTeamID: TID => dispatch(actions.updateTeamID(TID)),
+    updatePlayerID: PID => dispatch(actions.updatePlayerID(PID)),
   };
 };
 

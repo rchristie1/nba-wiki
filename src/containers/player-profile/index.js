@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import Loader from '../../widgets/loader';
-import PlayerSummary from '../../components/PlayerSummary';
-import { PlayerDetails } from '../../components/PlayerDetails';
+import PlayerSummary from '../../components/Players/PlayerSummary';
+import { PlayerDetails } from '../../components/Players/PlayerDetails';
+import noImage from '../../assets/images/noImage.jpg';
 
 import axios from 'axios';
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
 
-import { playercareerstats, commonplayerinfo, API2 } from '../../config';
+import { playercareerstats, commonplayerinfo, HeadShotsNBA, API2 } from '../../config';
 
 class PlayerProfile extends Component {
   state = {
@@ -18,63 +19,77 @@ class PlayerProfile extends Component {
     totals: [],
     statToggle: true,
     showSeason: true,
-    btn1Text: 'Season Stats',
-    btn2Text: 'Career Totals',
+    playerImage: null,
   };
 
   componentDidMount() {
-    this.props.getPlayerID();
+    /* If there is no ID in the store then set the default ID to LBJ
+    and update the store to reflect the change */
+    if (!this.props.PID) {
+      this.props.updatePlayerID(2544);
+      this.getPlayer(2544);
+    } else {
+      this.getPlayer(this.props.PID);
+    }
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevProps !== this.props) {
-      const PID = !prevProps.PID ? this.props.PID : prevProps.PID;
-
-      //Apply the current PlayerID to the config options
-      commonplayerinfo.PlayerID = PID;
-      playercareerstats.PlayerID = PID;
-
-      // post to the url with the Query params
-      axios
-        .post('/commonplayerinfo', commonplayerinfo)
-        // .get(`${API2}/commonplayerinfo`)
-        .then(res => {
-          this.setState({
-            playerData: res.data.resultSets[0].rowSet[0],
-            playerAverages: res.data.resultSets[1].rowSet[0],
-          });
-
-          axios
-            .post('/playercareerstats', playercareerstats)
-            // .get(`${API2}/playercareerstats`)
-            .then(resp => {
-              this.setState({ careerStats: resp.data.resultSets });
-              this.setState({ totals: PlayerDetails(resp.data.resultSets) });
-            })
-            .catch(err => console.log(err));
-        })
-        .catch(err => console.log(err));
+      this.getPlayer(this.props.PID);
     }
   }
 
-  toggleStats = () => {
-    let toggle = this.state.statToggle;
+  getPlayer = (id) => {
+    // const PID = 2544;
+    const PID = id;
+    //Apply the current PlayerID to the config options
+    commonplayerinfo.PlayerID = PID;
+    playercareerstats.PlayerID = PID;
 
-    toggle = !toggle;
+    // post to the url with the Query params
+    axios
+      .post('/commonplayerinfo', commonplayerinfo)
+      // .get(`${API2}/commonplayerinfo`)
+      .then(res => {
+        this.setState({
+          playerData: res.data.resultSets[0].rowSet[0],
+          playerAverages: res.data.resultSets[1].rowSet[0],
+        });
 
-    const btn1Text = toggle ? 'Season Stats' : 'Career Stats';
+        axios
+          .post('/playercareerstats', playercareerstats)
+          // .get(`${API2}/playercareerstats`)
+          .then(resp => {
+            this.setState({ careerStats: resp.data.resultSets });
+            this.setState({ totals: PlayerDetails(resp.data.resultSets, this.props.updateTeamID) });
+          })
+          .catch(err => console.log(err));
 
-    this.setState({ statToggle: toggle, btn1Text });
+        axios
+          .get(`${HeadShotsNBA}/${this.state.playerData[0]}.png`)
+          .then(() => {
+            this.setState({ playerImage: `${HeadShotsNBA}/${this.state.playerData[0]}.png` });
+          })
+          .catch(() => this.setState({ playerImage: noImage }));
+        // this.setState({ playerImage: noImage })
+      })
+      .catch(err => console.log(err));
   };
 
-  toggleStatType = () => {
-    let showSeason = this.state.showSeason;
+  toggleStats = (type) => {
+    let toggle = this.state.statToggle;
 
-    showSeason = !showSeason;
+    type === 'Season' ? toggle = true : toggle = false;
 
-    const btn2Text = showSeason ? 'Career Totals' : 'Season Totals';
+    this.setState({ statToggle: toggle });
+  };
 
-    this.setState({ showSeason, btn2Text });
+  toggleStatType = (type) => {
+    let toggle = this.state.showSeason;
+
+    type === 'Season' ? toggle = true : toggle = false;
+
+    this.setState({ showSeason: toggle });
   };
 
   render() {
@@ -96,8 +111,9 @@ class PlayerProfile extends Component {
         data={this.state}
         DOB={DOB}
         stats={[showSeasonStats, showCareerStats]}
-        clickToggle1={() => this.toggleStats()}
-        clickToggle2={() => this.toggleStatType()}
+        openTeamInfo={this.props.updateTeamID}
+        clickToggle1={this.toggleStats}
+        clickToggle2={this.toggleStatType}
       />
     ) : (
       <Loader />
@@ -113,7 +129,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    getPlayerID: () => dispatch(actions.getPlayerID()),
+    updatePlayerID: PID => dispatch(actions.updatePlayerID(PID)),
+    updateTeamID: TID => dispatch(actions.updateTeamID(TID)),
   };
 };
 

@@ -4,7 +4,7 @@ import styles from './index.module.scss';
 import TeamRoster from '../TeamRoster';
 import TeamGameLog from '../TeamGameLog';
 
-import { TeamLogo } from '../../config';
+import { TeamLogo } from '../../../config';
 
 const TeamSummary = props => {
   const td = props.data.teamDetails;
