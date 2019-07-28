@@ -57,7 +57,6 @@ const TeamGameLog = props => {
         <div>PTS:</div>
       </div>
       <div className={styles.resultContainer}>
-      {/* {showGameLog(props.data.resultSets[0].rowSet)} */}
       {showGameLog(props.data.rowSet)}
       </div>
     </div>

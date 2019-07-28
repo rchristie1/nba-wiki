@@ -6,9 +6,10 @@ import noImage from '../../assets/images/noImage.jpg';
 
 import axios from 'axios';
 import { connect } from 'react-redux';
+// import PropTypes from 'prop-types';
 import * as actions from '../../store/actions';
 
-import { playercareerstats, commonplayerinfo, HeadShotsNBA, API2 } from '../../config';
+import { playercareerstats, commonplayerinfo, HeadShotsNBA } from '../../config';
 
 class PlayerProfile extends Component {
   state = {

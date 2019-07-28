@@ -1,17 +1,22 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import styles from './index.module.scss';
 
 import TeamRoster from '../TeamRoster';
 import TeamGameLog from '../TeamGameLog';
 
 import { TeamLogo } from '../../../config';
+import TeamContext from '../../../context/TeamContext';
 
-const TeamSummary = props => {
-  const td = props.data.teamDetails;
-  const sr = props.data.seasonRankings;
-  const displayTab = props.data.showGamelog;
+const TeamSummary = () => {
+
+  const {teamDetails, seasonRankings, teamRoster, teamGameLog} = useContext(TeamContext);
+  
+  const td = teamDetails;
+  const sr = seasonRankings;
+  const [tab, setTab] = useState(false);    
 
   return (
+    
     <div className={styles.teamContainer}>
       <div className={styles.teamSummary}>
         <div className={styles.left}>
@@ -55,17 +60,17 @@ const TeamSummary = props => {
 
       <div>
         <div className={styles.tabs}>
-          <div className={!displayTab ? styles.active : undefined} onClick={() => props.showComponent(false)}>
+          <div className={!tab ? styles.active : undefined} onClick={() => setTab(false)}>
             Roster/Coaching Staff
           </div>
-          <div className={displayTab ? styles.active : undefined} onClick={() => props.showComponent(true)}>
+          <div className={tab ? styles.active : undefined} onClick={() => setTab(true)}>
             Game Log
           </div>
         </div>
-        {displayTab ? (
-          <TeamGameLog data={props.data.teamGameLog} />
+        {tab ? (
+          <TeamGameLog data={teamGameLog} />
         ) : (
-          <TeamRoster updatePlayer={props.updatePlayer} data={props.data.teamRoster} />
+          <TeamRoster data={teamRoster} />
         )}
       </div>
     </div>

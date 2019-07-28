@@ -1,38 +1,51 @@
-import React, { Component } from 'react';
-import TeamSummary from '../../components/TeamSummary';
+// import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
+import TeamSummary from '../../components/Teams/TeamSummary';
+import TeamContext from '../../context/TeamContext';
 import Loader from '../../widgets/loader';
 
 import axios from 'axios';
-import { connect } from 'react-redux';
+// import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import * as actions from '../../store/actions';
 
-import { commonteamroster, teaminfocommon, teamgamelog, API2 } from '../../config';
+import { commonteamroster, teaminfocommon, teamgamelog } from '../../config';
 
-class TeamProfile extends Component {
-  state = {
-    teamDetails: null,
-    teamGameLog: null,
-    teamRoster: null,
-    seasonRankings: null,
-    showGamelog: false,
-  };
+// class TeamProfile extends Component {
+const TeamProfile = () => {
+  const dispatch = useDispatch();
+  const TID = useSelector(state => state.teams.teamID);
+  // const PID = useSelector(state => state.players.playerID);
 
-  componentDidMount() {
-    if (!this.props.TID) {
-      this.props.updateTeamID(1610612761);
-      this.getTeam(1610612761);
+  const [teamDetails, setTeamDetails] = useState();
+  const [teamGameLog, setTeamGameLog] = useState();
+  const [teamRoster, setTeamRoster] = useState();
+  const [seasonRankings, setSeasonRankinks] = useState();
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    if (!TID) {
+      dispatch(actions.updateTeamID(1610612761));
+      getTeam(1610612761);
     } else {
-      this.getTeam(this.props.TID);
+      getTeam(TID);
     }
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  componentDidUpdate(prevProps) {
-    if (prevProps !== this.props) {
-      this.getTeam(this.props.TID);
+  useEffect(() => {
+    getTeam(TID);
+  }, [TID]);
+
+  useEffect(() => {
+    if (teamGameLog && teamDetails && teamRoster && seasonRankings) {
+      setLoaded(true);
+    } else {
+      setLoaded(false);
     }
-  }
+  }, [teamGameLog, teamDetails, teamRoster, seasonRankings]);
 
-  getTeam = id => {
+  const getTeam = id => {
     const TID = id;
 
     teaminfocommon.TeamID = TID;
@@ -43,10 +56,8 @@ class TeamProfile extends Component {
       .post('/teaminfocommon', teaminfocommon)
       // .get(`${API2}/teaminfocommon`)
       .then(res => {
-        this.setState({
-          teamDetails: res.data.resultSets[0].rowSet[0],
-          seasonRankings: res.data.resultSets[1].rowSet[0],
-        });
+        setTeamDetails(res.data.resultSets[0].rowSet[0]);
+        setSeasonRankinks(res.data.resultSets[1].rowSet[0]);
       })
       .catch(err => console.log(err));
 
@@ -54,9 +65,7 @@ class TeamProfile extends Component {
       .post('/commonteamroster', commonteamroster)
       // .get(`${API2}/commonteamroster`)
       .then(res => {
-        this.setState({
-          teamRoster: [res.data.resultSets[0].rowSet, res.data.resultSets[1].rowSet],
-        });
+        setTeamRoster([res.data.resultSets[0].rowSet, res.data.resultSets[1].rowSet]);
       })
       .catch(err => console.log(err));
 
@@ -64,46 +73,18 @@ class TeamProfile extends Component {
       .post('/teamgamelog', teamgamelog)
       // .get(`${API2}/teamgamelog`)
       .then(res => {
-        // this.setState({ teamGameLog: res.data });
-        this.setState({ teamGameLog: res.data.resultSets[0] });
+        setTeamGameLog(res.data.resultSets[0]);
       })
       .catch(err => console.log(err));
   };
 
-  showGamelog = value => {
-    this.setState({ showGamelog: value });
-  };
-
-  render() {
-    let loaded = this.state.seasonRankings && this.state.teamGameLog ? true : false;
-
-    return loaded > 0 ? (
-      <TeamSummary
-        data={this.state}
-        updatePlayer={this.props.updatePlayerID}
-        showComponent={value => this.showGamelog(value)}
-      />
-    ) : (
-      <Loader />
-    );
-  }
-}
-
-const mapStateToProps = state => {
-  return {
-    TID: state.teams.teamID,
-    PID: state.players.playerID,
-  };
+  return loaded ? (
+    <TeamContext.Provider value={{ teamDetails, teamRoster, teamGameLog, seasonRankings }}>
+      <TeamSummary />
+    </TeamContext.Provider>
+  ) : (
+    <Loader />
+  );
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    updateTeamID: TID => dispatch(actions.updateTeamID(TID)),
-    updatePlayerID: PID => dispatch(actions.updatePlayerID(PID)),
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TeamProfile);
+export default TeamProfile;
