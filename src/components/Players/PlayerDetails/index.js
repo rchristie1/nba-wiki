@@ -1,49 +1,21 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import './index.module.scss';
+import GenerateStatTable from '../../functions/players/generateStatTable';
 
-import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableHead from '@material-ui/core/TableHead';
 import Paper from '@material-ui/core/Paper';
-import TableRow from '@material-ui/core/TableRow';
-import TableCell from '@material-ui/core/TableCell';
 
-//#region Material UI
 const st = {
   overflowX: 'scroll',
   borderRadius: 0,
 }
 
-const StyledTableCell = withStyles(theme => ({
-  head: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
-  },
-  body: {
-    fontSize: 14,
-  },
-  root: {
-    width: 100,
-    padding: 8,
-  },
-}))(TableCell);
+export const PlayerDetails = (props, dispatch) => {
 
-const StyledTableRow = withStyles(theme => ({
-  root: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.background.default,
-    },
-  },
-}))(TableRow);
-//#endregion
-
-export const PlayerDetails = (props, openTeamInfo) => {
   let parent = null;
   let totals = [];
-  
 
   //loop only the first 4 sections inside the results set
   for (let i = 0; i < 4; i++) {
@@ -55,7 +27,7 @@ export const PlayerDetails = (props, openTeamInfo) => {
     //next generate all the child elements
     const childElements = props[i].rowSet.map(data => {
       for (let j = 0; j < data.length; j++) {
-        return GenerateStatTable(data, exlusions, 'row', openTeamInfo);
+        return GenerateStatTable(data, exlusions, 'row', dispatch);
       }
       return data;
     });
@@ -72,49 +44,4 @@ export const PlayerDetails = (props, openTeamInfo) => {
     totals = [...totals, parent];
   }
   return totals;
-};
-
-const GenerateStatTable = (data, exclusions, type, click) => {
-  let filterData = [];
-
-  if (data) {
-    data.map((d, i) => {
-      if (!exclusions.includes(i)) {
-        // only run if doing work for the head elements
-        if (type === 'head') {
-          if (d.includes('_PCT')) d = d.replace('_PCT', ' %');
-          if (d === 'TEAM_ABBREVIATION') d = 'TEAM';
-          if (d === 'SEASON_ID') d = 'SEASON';
-
-          return (filterData = [
-            ...filterData,
-            <StyledTableCell align='right' key={i}>
-              {d}
-            </StyledTableCell>
-          ]);
-        }
-        // create a link to the teams
-        if (i === 4 && data[4] !== 'TOT' && isNaN(data[4])) d = <Link to={'/teams'}>{d}</Link>;
-        filterData = [
-          ...filterData,
-          //send the team id to the store when the team is selected
-          <StyledTableCell onClick={i === 4 ? () => click(data[3]): null} align='right' key={i}>
-            {d}
-          </StyledTableCell>,
-        ];
-      }
-      return filterData;
-    });
-    return type === 'head' ? (
-      <TableRow hover>{filterData}</TableRow>
-    ) : (
-      <StyledTableRow key={`${data[0]}${data[26]}`}>{filterData}</StyledTableRow>
-    );
-  }
-};
-
-GenerateStatTable.propTypes = {
-  data: PropTypes.array.isRequired,
-  exclusions: PropTypes.array.isRequired,
-  type: PropTypes.string.isRequired,
 };

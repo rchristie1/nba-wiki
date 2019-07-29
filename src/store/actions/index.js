@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { API2, commonallplayers, teaminfocommon } from '../../config';
+import { commonallplayers } from '../../config';
 
 //#region Players
 export const getAllPlayers = () => {

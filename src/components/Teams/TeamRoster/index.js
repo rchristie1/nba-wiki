@@ -1,9 +1,14 @@
 import React from 'react';
 import styles from './index.module.scss';
 import Loader from '../../../widgets/loader';
+
 import { Link } from 'react-router-dom';
 
-const showPlayers = (players, updatePlayer) => {
+import { useDispatch } from 'react-redux'
+import {updatePlayerID} from '../../../store/actions';
+
+const showPlayers = (players, dispatch) => {
+  
   const allPlayers = players.map((d, i) => (
     <div key={i} className={styles.playerList}>
       <div>
@@ -11,7 +16,7 @@ const showPlayers = (players, updatePlayer) => {
         <span
           className={styles.name}
           onClick={() => {
-            updatePlayer(d[12]);
+            dispatch(updatePlayerID(d[12]));
           }}
         >
           <Link to='/'>{d[3]}</Link>
@@ -35,6 +40,7 @@ const showCoaches = players => {
 };
 
 const TeamRoster = props => {
+  const dispatch = useDispatch();
   let loaded;
   try {
     loaded = props.data[1] ? true : false;
@@ -53,7 +59,7 @@ const TeamRoster = props => {
           <div>Height</div>
           <div>School</div>
         </div>
-        <div>{showPlayers(props.data[0], props.updatePlayer)}</div>
+        <div>{showPlayers(props.data[0], dispatch)}</div>
       </div>
       <div>
         <h2>Coaching Staff</h2>
