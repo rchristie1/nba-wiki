@@ -1,5 +1,8 @@
+@import '../../UI/tabstyling.scss';
+
 .teamContainer {
   height: 360px;
+  padding-top: 20px;
 }
 
 .teamSummary,
@@ -12,14 +15,17 @@
 .teamSummary {
   justify-content: space-evenly;
   flex-wrap: wrap;
-}
-
-.right {
-  margin-right: 40px;
+  .right {
+    margin-right: 40px;
+  }
+  .left {
+    width: 50%;
+    justify-content: space-between;
+  }
 }
 
 .divider {
-  height: 80%;
+  min-height: 200px;
   width: 1px;
   background-color: darkgray;
   margin: 0 30px;
@@ -32,33 +38,35 @@
 }
 
 .tabs {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width: 100%;
-  div {
-    background-color: #0a3765;
-    color: #fff;
-    width: 49.25%;
-    height: 70px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 28px;
-    cursor: pointer;
-    border-top-left-radius: 25px;
-    border-top-right-radius: 25px;
-    transition: all 100ms ease-in;
-    &:first-child {
-      margin-left: 0.2%;
-    }
-    &:last-child {
-      margin-right: 0.2%;
+  @extend %tab-styles;
+}
+
+.seasonRankings,
+.teamDetails {
+  ul {
+    list-style-type: none;
+    li {
+      padding: 6px 0;
     }
   }
 }
 
-.active {
-  font-weight: bold;
-  text-decoration: underline;
+.keyStats {
+  text-align: center;
+  h3 {
+    display: initial;
+  }
+
+  .east {
+    color: #1c66b3;
+  }
+  .west {
+    color: #c52d28;
+  }
+}
+
+@media (max-width: 1280px) {
+  .divider {
+    display: none;
+  }
 }
