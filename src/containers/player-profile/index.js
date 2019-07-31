@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import PlayerSummary from '../../components/Players/PlayerSummary';
 import PlayerContext from '../../context/PlayerContext';
 
-
 import {getPlayer} from '../../components/functions/players/getPlayer';
 
 import { useDispatch, useSelector } from 'react-redux';
