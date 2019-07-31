@@ -1,10 +1,11 @@
 import React from 'react';
 import styles from './App.module.scss';
-import PlayerProfile from './containers/player-profile';
-import TeamProfile from './containers/team-profile';
 import Header from './components/Header';
 
 import { Switch, Route } from "react-router-dom";
+import PlayerProfile from './containers/player-profile';
+import TeamProfile from './containers/team-profile';
+import LeagueLeaders from './containers/league-leaders';
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         <Switch>
           <Route path="/" exact component={PlayerProfile} />
           <Route path="/teams" exact component={TeamProfile} />
+          <Route path="/leaders" exact component={LeagueLeaders} />
         </Switch>
       </div>
 

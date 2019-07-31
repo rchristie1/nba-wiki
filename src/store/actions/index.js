@@ -1,17 +1,16 @@
-import axios from 'axios';
-import { commonallplayers } from '../../config';
+import {getLeaders, getPlayers} from './requests';
 
 //#region Players
-export const getAllPlayers = () => {
-  const request = axios
-    // .get(`${API2}/commonallplayers`)
-    .post('/commonallplayers', commonallplayers)
-    .then(res => res.data.resultSets[0])
-    .catch(err => console.log(err));
-
+const getPlayerAll = (data) => {
   return {
     type: 'GET_ALL_PLAYERS',
-    payload: request,
+    payload: data,
+  };
+}
+
+export const getAllPlayers = () => {
+  return dispatch => {
+    getPlayers(dispatch, getPlayerAll);
   };
 };
 
@@ -25,8 +24,6 @@ export const updatePlayerID = (ID) => {
 //#endregion
 
 //#region Teams
-
-
 export const updateTeamID = (ID) => {
   const TUID = ID;
   return {
@@ -86,3 +83,61 @@ export const getAllTeams = () => {
 };
 
 //#endregion
+
+//#region League Leaders 
+export const getPoints = (data) => {
+  return {
+    type: 'GET_POINT_LEADERS',
+    payload: data
+  }
+}
+export const getSteals = (data) => {
+  return {
+    type: 'GET_STEAL_LEADERS',
+    payload: data
+  }
+}
+export const getAssists = (data) => {
+  return {
+    type: 'GET_ASSIST_LEADERS',
+    payload: data
+  }
+}
+export const getRebounds = (data) => {
+  return {
+    type: 'GET_REBOUND_LEADERS',
+    payload: data
+  }
+}
+export const getBlocks = (data) => {  
+  return {
+    type: 'GET_BLOCK_LEADERS',
+    payload: data
+  }
+}
+
+export const getPointLeaders = () => {
+  return dispatch => {
+    getLeaders(dispatch, getPoints, 'PTS');
+  };
+}
+export const getStealLeaders = () => {
+  return dispatch => {
+    getLeaders(dispatch, getSteals, 'STL');
+  };
+}
+export const getAssistLeaders = () => {
+  return dispatch => {
+    getLeaders(dispatch, getAssists, 'AST');
+  };
+}
+export const getReboundLeaders = () => {
+  return dispatch => {
+    getLeaders(dispatch, getRebounds, 'REB');
+  };
+}
+export const getBlockLeaders = () => {
+  return dispatch => {
+    getLeaders(dispatch, getBlocks, 'BLK');
+  };
+}

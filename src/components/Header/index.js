@@ -117,6 +117,9 @@ class Header extends Component {
             <Link className={!routeActive ? styles.active : null} to='/teams'>
               Teams
             </Link>
+            <Link className={!routeActive ? styles.active : null} to='/leaders'>
+              League Leaders
+            </Link>
           </div>
           <span>
             <SearchIcon />

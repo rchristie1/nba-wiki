@@ -18,8 +18,10 @@
 .env.test.local
 .env.production.local
 .eslintrc.js
+db.json
+src/config.js
+src/setupProxy.js
 package-lock.json
-/src/config.js
 
 npm-debug.log*
 yarn-debug.log*
