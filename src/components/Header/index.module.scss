@@ -92,6 +92,13 @@ select {
   }
 }
 
+.ResultLink {
+  color: #fff !important;
+  &:hover {
+    color: #000 !important;
+  }
+}
+
 .headTitle {
   color: #fff;
   border-bottom: none;

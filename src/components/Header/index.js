@@ -9,7 +9,6 @@ import debounce from 'lodash.debounce';
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
 
-import { makeStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 
 class Header extends Component {
@@ -23,18 +22,6 @@ class Header extends Component {
     this.props.getAllTeams();
   }
 
-  useStyles = makeStyles(theme => ({
-    searchIcon: {
-      width: theme.spacing(7),
-      height: '100%',
-      position: 'absolute',
-      pointerEvents: 'none',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-  }));
-
   /* Add debounce so it doesnt perform the update on every key stroke.
    This is a synthetic event the text must be passed in 
    directly or it will produce an error */
@@ -46,12 +33,14 @@ class Header extends Component {
 
     // map through the dataset to find the searched item
     searchCategory.map(d => {
+      //if search type is player
       if (searchType === 'player') {
         if (d[2].toLowerCase().includes(text.toLowerCase())) {
           searchResults = [...searchResults, d];
         }
         return d;
       }
+      // if search type is team
       if (d.teamName.toLowerCase().includes(text.toLowerCase())) {
         searchResults = [...searchResults, d];
       }
@@ -67,35 +56,35 @@ class Header extends Component {
     this.setState({ searchType: event.target.value.toLowerCase() === 'team' ? 'team' : 'player' });
 
   showSearchedItemList = () => {
-    const st = this.state.searchType;
+    const searchType = this.state.searchType;
     const searchResults = this.state.searchResults;
 
     return searchResults.map(
       (d, i) =>
         i < 6 && (
-          <div onClick={() => this.searchItemSelected(st, d.teamID, d[0])} key={i}>
-            {st === 'team' ? d.teamName : d[2]}
+          <div onClick={() => this.searchItemSelected(searchType, d.teamID, d[0])} key={i}>
+            <Link className={styles.ResultLink} to={searchType === 'team' ? '/teams' : '/'}>{searchType === 'team' ? d.teamName : d[2]}</Link>
           </div>
         )
     );
   };
-  
+
   openPlayerTeamProfile = UID => {
-    //update the team or player based on the type of search 
+    //update the team or player based on the type of search
     this.state.searchType === 'player' ? this.props.updatePlayerID(UID) : this.props.updateTeamID(UID);
   };
 
-  // hides the result list when a plater is selected
+  // hides the result list when a player is selected
   searchItemSelected = (searchType, TID, PID) => {
-    this.setState({searchResults: []});
+    this.setState({ searchResults: [] });
 
     this.openPlayerTeamProfile(searchType === 'team' ? TID : PID);
-  }
+  };
 
   // repopulates the results when selected input selected
   updateResults = val => {
     this.handleChange(val);
-  }
+  };
 
   render() {
     const category = this.state.searchType;
