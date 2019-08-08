@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
 import styles from './index.module.scss';
-import { Link } from 'react-router-dom';
+import PersistentDrawerLeft from '../UI/MaterialUI/sideDrawer/sideDrawer';
 
-import logo from '../../assets/images/nba_logo.png';
+import { Link } from 'react-router-dom';
 
 import debounce from 'lodash.debounce';
 
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
-
-import SearchIcon from '@material-ui/icons/Search';
 
 class Header extends Component {
   state = {
@@ -63,7 +61,9 @@ class Header extends Component {
       (d, i) =>
         i < 6 && (
           <div onClick={() => this.searchItemSelected(searchType, d.teamID, d[0])} key={i}>
-            <Link className={styles.ResultLink} to={searchType === 'team' ? '/teams' : '/'}>{searchType === 'team' ? d.teamName : d[2]}</Link>
+            <Link className={styles.ResultLink} to={searchType === 'team' ? '/teams' : '/'}>
+              {searchType === 'team' ? d.teamName : d[2]}
+            </Link>
           </div>
         )
     );
@@ -92,42 +92,17 @@ class Header extends Component {
 
     return (
       <div className={styles.container}>
-        <div className={styles.logo}>
-          <Link to='/'>
-            <img src={logo} alt='nba official logo' /> &nbsp; <span className={styles.headTitle}>Wiki</span>
-          </Link>
-        </div>
-
-        <div className={styles.seachSection}>
-          <div className={styles.links}>
-            <Link className={routeActive ? styles.active : null} to='/'>
-              Players
-            </Link>
-            <Link className={!routeActive ? styles.active : null} to='/teams'>
-              Teams
-            </Link>
-            <Link className={!routeActive ? styles.active : null} to='/leaders'>
-              League Leaders
-            </Link>
-          </div>
-          <span>
-            <SearchIcon />
-            <select onChange={event => this.searchOptionChanged(event)}>
-              <option id='1'>Player</option>
-              <option id='2'>Team</option>
-            </select>
-
-            <input
-              type='text'
-              placeholder={`${category === 'team' ? 'Raptors' : 'Lebron James'}...`}
-              onChange={e => this.handleChange(e.target.value)}
-              onFocus={e => this.updateResults(e.target.value)}
-            />
-          </span>
-          <div className={styles.searchResults}>
-            {this.state.searchResults.length > 0 && this.showSearchedItemList()}
-          </div>
-        </div>
+        <PersistentDrawerLeft
+          data={{
+            category,
+            routeActive,
+            searchOptionChanged:(val) => this.searchOptionChanged(val),
+            handleChange:(val) => this.handleChange(val),
+            updateResults:(val) => this.updateResults(val),
+            showSearchedItemList: (val) => this.showSearchedItemList(val),
+            searchResults: this.state.searchResults
+          }}
+        />
       </div>
     );
   }

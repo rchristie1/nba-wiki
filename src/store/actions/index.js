@@ -141,3 +141,4 @@ export const getBlockLeaders = () => {
     getLeaders(dispatch, getBlocks, 'BLK');
   };
 }
+//#endregion

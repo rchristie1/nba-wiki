@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { getLeaders } from '../../components/functions/leaders';
-import ShowLeaders from '../../components/leaders/showLeaders';
+
+import { useDispatch, useSelector } from 'react-redux';
 import * as actions from '../../store/actions';
+
+import CreateExpansionPanel from '../../components/UI/MaterialUI/expansionPanels';
+import Loader from '../../widgets/loader';
+
 
 const LeagueLeaders = () => {
   const dispatch = useDispatch();
@@ -12,6 +16,8 @@ const LeagueLeaders = () => {
   const [leadersAST, setleadersAST] = useState();
   const [leadersSTL, setleadersSTL] = useState();
   const [leadersBLK, setleadersBLK] = useState();
+
+  const [toggle1, setToggle1] = useState(true);
   const [loaded, setLoaded] = useState(false);
 
   const pts = useSelector(state => state.leaders.pointLeaders);
@@ -57,7 +63,6 @@ const LeagueLeaders = () => {
       getLeaders(categories);
       setLoaded(true);
     }
-
   }, [pts, reb, ast, stl, blk]);
 
   const styles = {
@@ -66,39 +71,28 @@ const LeagueLeaders = () => {
     alignItems: 'center',
     maxWidth: '1366px',
     margin: '0 auto',
-  }
+    paddingTop: '40px'
+  };
 
-  return (    
+  const togglePanel1 = () => {
+    let toggleValue = toggle1;
+
+    setToggle1((toggleValue = !toggleValue));
+  };
+
+  return (
     <div style={styles}>
+      <h1>League Leaders</h1>
       {loaded ? (
-        <>
-          <div style={{width: '100%'}}>
-            <h1>Point Leaders</h1>
-            <ShowLeaders leaders={leadersPTS} />
-          </div>
-
-          <div style={{width: '100%'}}>
-            <h1>Assist Leaders</h1>
-            <ShowLeaders leaders={leadersAST} />
-          </div>
-
-          <div style={{width: '100%'}}>
-            <h1>Rebounding Leaders</h1>
-            <ShowLeaders leaders={leadersREB} />
-          </div>
-
-          <div style={{width: '100%'}}>
-            <h1>Steal Leaders</h1>
-            <ShowLeaders leaders={leadersSTL} />
-          </div>
-
-          <div style={{width: '100%'}}>
-            <h1>Block Leaders</h1>
-            <ShowLeaders leaders={leadersBLK} />
-          </div>
-        </>
+        CreateExpansionPanel([
+          ['Point', leadersPTS],
+          ['Assist', leadersAST],
+          ['Rebouding', leadersREB],
+          ['Steal', leadersSTL],
+          ['Block', leadersBLK],
+        ], [toggle1, togglePanel1])
       ) : (
-        <div>Loading...</div>
+       <Loader />
       )}
     </div>
   );
