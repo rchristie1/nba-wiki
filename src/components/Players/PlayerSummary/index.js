@@ -7,6 +7,8 @@ import { TeamLogo } from '../../../config';
 import { useDispatch } from 'react-redux';
 import { updateTeamID } from '../../../store/actions';
 
+import PlayerGameLog from '../PlayerGameLog';
+
 import { Link } from 'react-router-dom';
 
 const PlayerSummary = () => {
@@ -105,13 +107,18 @@ const PlayerSummary = () => {
           </div>
         </div>
       </section>
+
       <div className={styles.averages}>
         <div>PPG: {avg[3]}</div>
         <div>APG: {avg[4]}</div>
         <div>RPG: {avg[5]}</div>
       </div>
 
-      <div className={styles.content}>{showSeason ? seasonStats : careerStats}</div>
+      <div className={styles.content}>
+        {showSeason ? seasonStats : careerStats}
+        {/* <PlayerGameLog id={pd[0]} /> */}
+      </div>
+         
     </section>
   );
 };
