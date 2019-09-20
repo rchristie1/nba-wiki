@@ -13,7 +13,7 @@ const st = {
   borderRadius: 0,
 };
 
-const PlayerGameLog = ({ id }) => {
+const PlayerGameLog = ({ id, year }) => {
   const [seasonNumbers, setSeasonNumbers] = useState();
   const [playoffNumbers, setPlayoffNumbers] = useState();
   const [headers, setHeaders] = useState();
@@ -24,10 +24,21 @@ const PlayerGameLog = ({ id }) => {
   const [season, setSeason] = useState();
   const [playoffs, setPlayoffs] = useState();
 
+  const [asc, setAsc] = useState(false);
+
   useEffect(() => {
     getGameLogData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if(year){
+      playergamelog.Season = year;
+
+      getGameLogData();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [year])
 
   const getGameLogData = () => {
     // get regular season game log for current season
@@ -36,14 +47,21 @@ const PlayerGameLog = ({ id }) => {
 
     //get playoff stats
     setTimeout(() => {
-      playergamelog.SeasonType = 'Playoffs';
+      // playergamelog.SeasonType = 'Regular Season';
       getGameLog(setPlayoffNumbers, playergamelog);
     }, 1);
-
-    // preseason, all-star, years etc
-    //playergamelog.Season = '2016-17'
   };
-  
+
+  const sort = (colNum) => {
+    console.log(asc);
+    let x = asc;
+
+    x = !x;
+    console.log(x);
+    
+    setSeasonNumbers([...seasonNumbers].sort((a,b) => a[colNum] > b[colNum] ? x ? -1 : 1 : x ? 1 : -1));
+    setAsc(x);
+  }
 
   useEffect(() => {
     if (seasonNumbers && playoffNumbers) {
@@ -79,9 +97,9 @@ const PlayerGameLog = ({ id }) => {
       {isLoaded && (
         <Paper style={st}>
           <Table>
-            <TableHead>{GenerateStatTable(headers, exlusions, 'head')}</TableHead>
+            <TableHead>{GenerateStatTable(headers, exlusions, 'head', sort)}</TableHead>
             <TableBody>{season}</TableBody>
-            <TableBody>{playoffs}</TableBody>
+            {/* <TableBody>{playoffs}</TableBody> */}
           </Table>
         </Paper>
       )}

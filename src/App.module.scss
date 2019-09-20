@@ -22,4 +22,8 @@ footer {
 
 .profile {
   margin: 57px 0;
+  > :first-child {
+    width: 75%;
+    margin: 0 auto;
+  }
 }

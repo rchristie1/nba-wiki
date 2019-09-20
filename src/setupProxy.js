@@ -9,6 +9,8 @@ module.exports = app => {
       '/commonteamroster',
       '/teamgamelog',
       '/commonallplayers',
+      '/leagueleaders',
+      '/playergamelog'
     ],
     proxy({ target: 'https://stats.nba.com/stats', changeOrigin: true })
   );

@@ -139,15 +139,7 @@ export default function PersistentDrawerLeft(...props) {
           <div className={styles.searchResults}>
             {args.searchResults && args.searchResults.length > 0 && args.showSearchedItemList()}
           </div>
-        </div>
-
-
-
-
-
-
-
-        
+        </div>  
       </AppBar>
       <Drawer
         className={classes.drawer}

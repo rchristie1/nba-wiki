@@ -23,7 +23,7 @@ const GenerateStatTable = (data, exclusions, type, dispatch) => {
 
           return (filterData = [
             ...filterData,
-            <StyledTableCell align='right' key={i}>
+            <StyledTableCell key={`${i}${d[0]}`} align='right'>
               {d}
             </StyledTableCell>,
           ]);
@@ -33,7 +33,7 @@ const GenerateStatTable = (data, exclusions, type, dispatch) => {
         filterData = [
           ...filterData,
           //send the team id to the store when the team is selected
-          <StyledTableCell onClick={i === 4 ? () => dispatch(updateTeamID(data[3])) : null} align='right' key={i}>
+          <StyledTableCell key={`${i}${d[1]}`} onClick={i === 4 ? () => dispatch(updateTeamID(data[3])) : null} align='right'>
             {d}
           </StyledTableCell>,
         ];

@@ -3,7 +3,7 @@ import React from 'react';
 import { StyledTableCell, StyledTableRow } from '../../UI/MaterialUI/custom';
 import TableRow from '@material-ui/core/TableRow';
 
-const GenerateStatTable = (data, exclusions, type) => {
+const GenerateStatTable = (data, exclusions, type, sort) => {
   let filterData = [];
 
   if (data) {
@@ -17,7 +17,7 @@ const GenerateStatTable = (data, exclusions, type) => {
 
           return (filterData = [
             ...filterData,
-            <StyledTableCell align='right' key={i}>
+            <StyledTableCell onClick={() => sort(i)} align='right' key={i}>
               {d}
             </StyledTableCell>,
           ]);
